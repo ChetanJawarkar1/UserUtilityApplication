@@ -11,6 +11,7 @@ import com.cj.service.KafkaSender;
 @RestController
 @RequestMapping(value = "/javainuse-kafka/")
 public class ApacheKafkaWebController {
+	// small comment added
 /*
 	@Autowired
 	KafkaSender kafkaSender;
