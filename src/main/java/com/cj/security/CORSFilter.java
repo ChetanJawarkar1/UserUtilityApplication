@@ -11,12 +11,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CORSFilter implements Filter {
 
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-		System.out.println("Filtering on...........................................................");
+		System.out.println("Filtering on..........................................................."+req.getCharacterEncoding());
+		
 		HttpServletResponse response = (HttpServletResponse) res;
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Credentials", "true");
@@ -27,6 +30,7 @@ public class CORSFilter implements Filter {
 		chain.doFilter(req, res);
 	}
 
+		
 	public void init(FilterConfig filterConfig) {}
 
 	public void destroy() {}

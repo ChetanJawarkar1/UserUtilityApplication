@@ -16,13 +16,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.cj.globleExceptions.CustomExceptioHandler;
 import com.cj.globleExceptions.Token_Exception;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
-
+@CrossOrigin(origins="http://localhost:3000")
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -34,7 +36,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws ServletException, IOException {
+			throws ServletException, IOException,ExpiredJwtException {
 
 		
 		  Enumeration<String> headerNames = request.getHeaderNames();
@@ -51,19 +53,25 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		// only the Token
 		System.out.println("REQUEST HEADER::::"+requestTokenHeader);
 		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-			jwtToken = requestTokenHeader.substring(7);
+			jwtToken = requestTokenHeader.substring(7).replace("{", "").replace("}", "").replace("token", "").replace(":", "").replace("\"", "");
 		System.out.println("TOKEN AFTER SUBSTRING::::"+jwtToken);
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 				System.out.println("Uname :"+username);
 			} catch (IllegalArgumentException e) {
 				System.out.println("JwtRequestFilter Unable to get JWT Token");
-			} catch (ExpiredJwtException e) {
-				System.out.println("JwtRequestFilter JWT Token has expired");
-				
+							
 			}catch(MalformedJwtException e) {
-				System.out.println("Pakad lia usko");
+				System.out.println("Pakad lia usko"+e);
+			} 
+			 catch(ExpiredJwtException e) {
+		    System.out.println("JwtRequestFilter JWT Token has expired");
+			System.out.println("thow token wala");  
+			//throw new Exception("JWT TOKEN EXPIRED",e); 
+			//throw new Exception("INVALID_CREDENTIALS", e);
+					  
 			}
+				 
 		} else {
 			logger.warn("JWT Token null or does not begin with Bearer String::"+requestTokenHeader);
 		}

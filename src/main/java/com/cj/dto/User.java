@@ -4,7 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
+
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.MultipartFilter;
 
 @Entity
 @Table(name = "test_user")
@@ -16,6 +20,9 @@ public class User {
     private  String firstName = "";
     private  String lastName = "";;
     private  String email = "";
+    @Lob
+    private byte image[] ;
+    
     
     
     public User() {
@@ -36,11 +43,12 @@ public class User {
 
 
 
-	public User(String firstName, String lastName, String email) {
+	public User(String firstName, String lastName, String email,byte[] image) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.image = image;
 	}
 	
 
@@ -71,6 +79,20 @@ public class User {
 
 	public String getEmail() {
 		return email;
+	}
+
+
+
+
+
+	public byte[] getImage() {
+		return image;
+	}
+
+
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 

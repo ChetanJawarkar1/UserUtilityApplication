@@ -4,15 +4,21 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.http.HttpStatus;
+
 @XmlRootElement(name = "error")
 public class ErrorResponse {
 
-	public ErrorResponse(String message, List<String> details) {
+	public ErrorResponse(String message,HttpStatus statuscode, List<String> details) {
         super();
+        
         this.message = message;
         this.details = details;
+        this.statuscode = statuscode;
+        
     }
  
+	private  HttpStatus statuscode;
     //General error message about nature of error
     private String message;
  
@@ -34,6 +40,16 @@ public class ErrorResponse {
 	public void setDetails(List<String> details) {
 		this.details = details;
 	}
+
+	public HttpStatus getStatuscode() {
+		return statuscode;
+	}
+
+	public void setStatuscode(HttpStatus statuscode) {
+		this.statuscode = statuscode;
+	}
+
+	
     
     
     
