@@ -1,6 +1,7 @@
 package com.cj.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +24,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Value("${token.authentication}")
+	private String is_Authentication_Enable;
 
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -56,24 +60,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		
+
+		
 		System.out.println("WebSecurityConfig configure");
 		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
-				// dont authenticate this particular request
-		//   authentication chalu krna hai to isko uncomment kro below ko
-				.authorizeRequests().antMatchers("/authenticate").permitAll().
-				//agar authentication band krna hai to ye  uncomment krna
-				//.authorizeRequests().antMatchers("/").permitAll();
-				
-				// all other requests need to be authenticated
-	          //   authentication chalu krna hai to isko uncomment kro below ko
-				anyRequest().authenticated().and().cors().and().
-				// make sure we use stateless session; session won't be used to
-				// store user's state.
-			    exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-			  .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		// Add a filter to validate the tokens with every request
-		 httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		if (is_Authentication_Enable.equals("YES")) {
+			httpSecurity.csrf().disable().authorizeRequests().antMatchers("/authenticate").permitAll().
+
+					anyRequest().authenticated().and().cors().and().
+
+					exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
+					.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+			// Add a filter to validate the tokens with every request
+			httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+		} else {
+
+			httpSecurity.csrf().disable().authorizeRequests().antMatchers("/").permitAll();
+			
 	}
+  }
 }
