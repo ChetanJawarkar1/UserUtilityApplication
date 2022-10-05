@@ -1,5 +1,4 @@
 package com.cj.controller;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,7 +8,6 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.IntStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.rowset.serial.SerialException;
 import javax.validation.Valid;
@@ -58,8 +56,6 @@ public class UserController {
             return user + "\n" + file.getOriginalFilename() + "\n" + file.getSize();
         }
 
-	
-	
 	
 	@GetMapping({ "/hello" })
 	public String hello() {
